@@ -1,0 +1,21 @@
+1. Dapp.
+	Allow for users to sign up to drive
+	All users to ship a package.
+	Connect to IPFS
+	Connect to Infura.
+	
+	
+cu.ship: hard
+cu.estimate_shipping: easy
+cu.shipment_exists easy
+cu.get_shipment_driver easy
+cu.get_shipment_status easy
+cu.get_driver_status() easy
+cu.get_driver_lat() easy
+cu.get_driver_long() easy
+
+contract:
+get driver address for shipment
+get status for shipment
+
+

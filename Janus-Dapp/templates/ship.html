@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Ship a package</title>
+        <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico" />
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://use.fontawesome.com/releases/v5.15.1/js/all.js" crossorigin="anonymous"></script>
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+        <link href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+        <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" />
+    </head>
+    <body id="page-top">
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+            <div class="container">
+                <a class="navbar-brand js-scroll-trigger" href="#page-top"><img src="assets/img/navbar-logo.svg" alt="" /></a>
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    Menu
+                    <i class="fas fa-bars ml-1"></i>
+                </button>
+            </div>
+        </nav>
+        <!-- Contact-->
+        <section class="page-section" id="contact">
+            <div class="container">
+                <div class="text-center">
+                    <h2 class="section-heading text-uppercase">Ship a package</h2>
+                    <h3 class="section-subheading text-muted">{{address}}</h3>
+                    <h3 class="section-subheading text-muted" id = "status"></h3>
+					<h3 class="section-subheading text-muted" id = "shippingcost"></h3>
+
+                </div>
+				
+				<script>
+					function ship(form) {
+					document.getElementById("status").innerHTML = "Processing your request";
+					var pickup = form.pickup.value;
+					var dropoff = form.dropoff.value;
+					var weight = form.weight.value;
+					var length = form.length.value;
+					var height = form.height.value;
+					var width = form.width.value;
+					var pk = form.pk.value;
+					var address = "{{address}}";
+
+					$.post("/api/ship",
+					  {
+						address : address,
+						pickup: pickup,
+						dropoff: dropoff,
+						weight: weight,
+						length: length,
+						height: height,
+						width: width,
+						pk: pk,
+					  },
+					function(data, status){
+						console.log(status);
+						document.getElementById("status").innerHTML = data;
+					});
+				}
+				</script>
+                <form id="contactForm" name="sentMessage" novalidate="novalidate" action="#" method="POST">
+                    <div class="row align-items-stretch mb-5">
+						<div class="col">
+						</div>
+                        <div class="col">
+                            <div class="form-group">
+								<input class="form-control" id="pk" name="pk" type="text" placeholder="private key" required="required" data-validation-required-message="Please enter your private key" />
+								
+								<input class="form-control" id="pickup" name="pickup" type="text" placeholder="Pickup Address: lat,long" required="required" data-validation-required-message="Please enter the pickup address" />
+								
+                                <input class="form-control" id="dropoff" name="dropoff" type="text" placeholder="Dropoff Address: lat,long" required="required" data-validation-required-message="Please enter the pickup address" />
+                                <p class="help-block text-danger"></p>
+                            </div>
+                            <div class="form-group mb-md-0">
+                                <input class="form-control" name = "length" id="length" type="number" placeholder="length (in)" required="required" data-validation-required-message="Please enter the length of your vehicle (inches)" />
+								
+								<input class="form-control" name = "width" id="width" type="number" placeholder="width (in)" required="required" data-validation-required-message="Please enter the width of your vehicle (inches)" />
+
+								<input class="form-control" name = "height" id="height" type="number" placeholder="height (in)" required="required" data-validation-required-message="Please enter the height of your vehicle (inches)" />
+								
+								<input class="form-control" name = "weight" id="weight" type="number" placeholder="weight (lb)" required="required" data-validation-required-message="Please enter the capacity of your vehicle (pounds)" />
+
+                                <p class="help-block text-danger"></p>
+                            </div>
+                        </div>
+						<div class="col">
+						</div>
+                    </div>
+                    <div class="text-center">
+						
+						<script>
+						
+						function view_cost(form) {
+						var pickup = form.pickup.value;
+						var dropoff = form.dropoff.value;
+
+						$.post("/api/estimatecost",
+						  {
+							pickup : pickup,
+							dropoff: dropoff,
+						  },
+						function(data, status){
+							console.log(status);
+							document.getElementById("shippingcost").innerHTML = data;
+						});
+					
+
+						}
+						</script>
+						
+						
+                        <button class="btn btn-primary btn-xl text-uppercase" id="sendMessageButton" type="button" onclick = "view_cost(this.form)">Calculate Shipping Cost</button>
+						
+						<button class="btn btn-primary btn-xl text-uppercase" id="shippack" type="button" onclick = "ship(this.form)">Ship package</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+        <!-- Footer-->
+        <footer class="footer py-4">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-4 text-lg-left">Copyright © Sachal Malick 2020</div>
+                    <div class="col-lg-4 text-lg-right">
+                        <a class="mr-3" href="#!">Privacy Policy</a>
+                        <a href="#!">Terms of Use</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Third party plugin JS-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+        <!-- Contact form JS-->
+        <script src="assets/mail/jqBootstrapValidation.js"></script>
+        <script src="assets/mail/contact_me.js"></script>
+        <!-- Core theme JS-->
+        <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+    </body>
+</html>
